@@ -1,4 +1,4 @@
-package docx
+package docxrepl
 
 import (
 	"fmt"
@@ -184,7 +184,6 @@ func ParsePlaceholders(runs DocumentRuns, docBytes []byte) (placeholders []*Plac
 		// For the length this means that (len(openPos) + 1) == len(closePos)
 		// So we can be sure that the last position in openPos is the opening tag of the
 		// unclosed placeholder.
-		fmt.Printf("openPos: %v, closePos: %v\n", openPos, closePos)
 		if len(openPos) > len(closePos) {
 			// merge full placeholders in the run, leaving out the last openPos since
 			// we know that the one is left over and must be handled separately below

@@ -1,4 +1,4 @@
-package docx
+package docxrepl
 
 import (
 	"archive/zip"
@@ -275,9 +275,9 @@ func (d *Document) SetFile(fileName string, fileBytes []byte) error {
 // parseArchive will go through the docx zip archive and read them into the FileMap.
 // Files inside the FileMap are those which can be modified by the lib.
 // Currently not all files are read, only:
-// 	- word/document.xml
-//	- word/header*.xml
-//	- word/footer*.xml
+//   - word/document.xml
+//   - word/header*.xml
+//   - word/footer*.xml
 func (d *Document) parseArchive() error {
 	readZipFile := func(file *zip.File) []byte {
 		readCloser, err := file.Open()
