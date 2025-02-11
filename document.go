@@ -168,7 +168,7 @@ func (d *Document) replace(placeholderMap PlaceholderMap, file string) ([]byte, 
 	if _, ok := d.runParsers[file]; !ok {
 		return nil, fmt.Errorf("no parser for file %s", file)
 	}
-	placeholderCount := d.countPlaceholders(file, placeholderMap)
+//	placeholderCount := d.countPlaceholders(file, placeholderMap)
 	placeholders := d.filePlaceholders[file]
 	replacer := d.fileReplacers[file]
 
@@ -183,10 +183,10 @@ func (d *Document) replace(placeholderMap PlaceholderMap, file string) ([]byte, 
 		}
 	}
 
-	// ensure that all placeholders have been replaced
-	if placeholderCount != replacer.ReplaceCount {
-		return nil, fmt.Errorf("not all placeholders were replaced, want=%d, have=%d", placeholderCount, replacer.ReplaceCount)
-	}
+	// ensure that all placeholders have been replaced -> replace only if possible
+//	if placeholderCount != replacer.ReplaceCount {
+//		return nil, fmt.Errorf("not all placeholders were replaced, want=%d, have=%d", placeholderCount, replacer.ReplaceCount)
+//	}
 
 	d.fileReplacers[file] = replacer
 	d.filePlaceholders[file] = placeholders
