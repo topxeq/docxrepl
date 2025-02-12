@@ -31,6 +31,20 @@ type Placeholder struct {
 	Fragments []*PlaceholderFragment
 }
 
+func SetDelimiter(startA, endA string) error {
+	if len(startA) < 1 || len(endA) < 1 {
+		return fmt.Errorf("empty delimiter")
+	}
+	
+	OpenDelimiter = ([]rune(startA))[0]
+	CloseDelimiter = ([]rune(endA))[0]
+	
+	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
+	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
+
+	return nil
+}
+
 // Text assembles the placeholder fragments using the given docBytes and returns the full placeholder literal.
 func (p Placeholder) Text(docBytes []byte) string {
 	str := ""
@@ -71,9 +85,9 @@ func ParsePlaceholders(runs DocumentRuns, docBytes []byte) (placeholders []*Plac
 	unclosedPlaceholder := new(Placeholder)
 	hasOpenPlaceholder := false
 	
-	// refresh the OpenDelimiterRegex and CloseDelimiterRegex
-	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
-	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
+//	// refresh the OpenDelimiterRegex and CloseDelimiterRegex
+//	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
+//	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
 
 	for _, run := range runs.WithText() {
 		runText := run.GetText(docBytes)
