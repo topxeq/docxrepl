@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-const (
+var (
 	// OpenDelimiter defines the opening delimiter for the placeholders used inside a docx-document.
 	OpenDelimiter rune = '{'
 	// CloseDelimiter defines the closing delimiter for the placeholders used inside a docx-document.
@@ -70,6 +70,10 @@ func ParsePlaceholders(runs DocumentRuns, docBytes []byte) (placeholders []*Plac
 	// tmp vars used to preserve state across iterations
 	unclosedPlaceholder := new(Placeholder)
 	hasOpenPlaceholder := false
+	
+	// refresh the OpenDelimiterRegex and CloseDelimiterRegex
+	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
+	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
 
 	for _, run := range runs.WithText() {
 		runText := run.GetText(docBytes)
