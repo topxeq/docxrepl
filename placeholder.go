@@ -9,16 +9,16 @@ import (
 
 var (
 	// OpenDelimiter defines the opening delimiter for the placeholders used inside a docx-document.
-	OpenDelimiter rune = "{{"
+	OpenDelimiter rune = '{'
 	// CloseDelimiter defines the closing delimiter for the placeholders used inside a docx-document.
-	CloseDelimiter rune = "}}"
+	CloseDelimiter rune = '}'
 )
 
 var (
 	// OpenDelimiterRegex is used to quickly match the opening delimiter and find it'str positions.
-	OpenDelimiterRegex = regexp.MustCompile(OpenDelimiter)
+	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
 	// CloseDelimiterRegex is used to quickly match the closing delimiter and find it'str positions.
-	CloseDelimiterRegex = regexp.MustCompile(CloseDelimiter)
+	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
 )
 
 // PlaceholderMap is the type used to map the placeholder keys (without delimiters) to the replacement values
@@ -31,30 +31,16 @@ type Placeholder struct {
 	Fragments []*PlaceholderFragment
 }
 
-//func SetDelimiter(startA, endA string) error {
-//	if len(startA) < 1 || len(endA) < 1 {
-//		return fmt.Errorf("empty delimiter")
-//	}
-//	
-//	OpenDelimiter = ([]rune(startA))[0]
-//	CloseDelimiter = ([]rune(endA))[0]
-//	
-//	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
-//	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
-//
-//	return nil
-//}
-
 func SetDelimiter(startA, endA string) error {
 	if len(startA) < 1 || len(endA) < 1 {
 		return fmt.Errorf("empty delimiter")
 	}
 	
-	OpenDelimiter = startA
-	CloseDelimiter = endA
+	OpenDelimiter = ([]rune(startA))[0]
+	CloseDelimiter = ([]rune(endA))[0]
 	
-	OpenDelimiterRegex = regexp.MustCompile(OpenDelimiter)
-	CloseDelimiterRegex = regexp.MustCompile(CloseDelimiter)
+	OpenDelimiterRegex = regexp.MustCompile(string(OpenDelimiter))
+	CloseDelimiterRegex = regexp.MustCompile(string(CloseDelimiter))
 
 	return nil
 }
@@ -305,64 +291,33 @@ func assembleFullPlaceholders(run *Run, openPos, closePos []int) (placeholders [
 
 // AddPlaceholderDelimiter will wrap the given string with OpenDelimiter and CloseDelimiter.
 // If the given string is already a delimited placeholder, it is returned unchanged.
-//func AddPlaceholderDelimiter(s string) string {
-//	if IsDelimitedPlaceholder(s) {
-//		return s
-//	}
-//	return fmt.Sprintf("%c%s%c", OpenDelimiter, s, CloseDelimiter)
-//}
 func AddPlaceholderDelimiter(s string) string {
 	if IsDelimitedPlaceholder(s) {
 		return s
 	}
-	
-	return fmt.Sprintf("%s%s%s", OpenDelimiter, s, CloseDelimiter)
+	return fmt.Sprintf("%c%s%c", OpenDelimiter, s, CloseDelimiter)
 }
 
 // RemovePlaceholderDelimiter removes OpenDelimiter and CloseDelimiter from the given text.
 // If the given text is not a delimited placeholder, it is returned unchanged.
-//func RemovePlaceholderDelimiter(s string) string {
-//	if !IsDelimitedPlaceholder(s) {
-//		return s
-//	}
-//	return strings.Trim(s, fmt.Sprintf("%s%s", string(OpenDelimiter), string(CloseDelimiter)))
-//}
 func RemovePlaceholderDelimiter(s string) string {
 	if !IsDelimitedPlaceholder(s) {
 		return s
 	}
-	
-	len0 := len(s)
-	
-	len1 := len(OpenDelimiter)
-	len2 := len(CloseDelimiter)
-	
-	return s[len1:len0-len2]
+	return strings.Trim(s, fmt.Sprintf("%s%s", string(OpenDelimiter), string(CloseDelimiter)))
 }
 
 // IsDelimitedPlaceholder returns true if the given string is a delimited placeholder.
 // It checks whether the first and last rune in the string is the OpenDelimiter and CloseDelimiter respectively.
 // If the string is empty, false is returned.
-//func IsDelimitedPlaceholder(s string) bool {
-//	if len(s) < 1 {
-//		return false
-//	}
-//	first := s[0]
-//	last := s[len(s)-1]
-//	if rune(first) == OpenDelimiter && rune(last) == CloseDelimiter {
-//		return true
-//	}
-//	return false
-//}
-
 func IsDelimitedPlaceholder(s string) bool {
 	if len(s) < 1 {
 		return false
 	}
-
-	if strings.HasPrefix(OpenDelimiter) && strings.HasPrefix(CloseDelimiter) {
+	first := s[0]
+	last := s[len(s)-1]
+	if rune(first) == OpenDelimiter && rune(last) == CloseDelimiter {
 		return true
 	}
-	
 	return false
 }
