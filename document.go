@@ -210,6 +210,54 @@ func (d *Document) Placeholders() (placeholders []*Placeholder) {
 	return placeholders
 }
 
+func (d *Document) PlaceholderInfos() (placeholders [][]string) {
+	for k, p := range d.filePlaceholders {
+		fileBytesT := d.GetFile(k)
+		
+		if fileBytesT == nil {
+			continue
+		}
+		
+//		aryT := make([]string, 2)
+		for l, lv := range p {
+			strT := ""
+			
+			for _, jv := range lv.Fragments {
+				strT += jv.Text(fileBytesT)
+			}
+			
+			placeholders = append(placeholders, []string{k, fmt.Sprintf("%v", l), strT})
+		}
+		
+	}
+	
+	return placeholders
+}
+
+func (d *Document) PlaceholderTexts() (placeholders []string) {
+	for k, p := range d.filePlaceholders {
+		fileBytesT := d.GetFile(k)
+		
+		if fileBytesT == nil {
+			continue
+		}
+		
+//		aryT := make([]string, 2)
+		for _, lv := range p {
+			strT := ""
+			
+			for _, jv := range lv.Fragments {
+				strT += jv.Text(fileBytesT)
+			}
+			
+			placeholders = append(placeholders, strT)
+		}
+		
+	}
+	
+	return placeholders
+}
+
 // countPlaceholders will return the total count of placeholders from the placeholderMap in the given data.
 // Reoccurring placeholders are also counted multiple times.
 func (d *Document) countPlaceholders(file string, placeholderMap PlaceholderMap) int {
